@@ -1,0 +1,135 @@
+{% include "header.html" %}
+
+
+
+  <!-- ////////////////////////////// Start ///////////////////////////////// -->
+  <!-- Featured Products - 5 Item Carousel -->
+  <div id="productCarousel" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="4000">
+    <div class="d-flex justify-content-center">
+        <div class="carousel-inner" style="width: 1200px;">
+          {% set products_per_slide = 5 %}
+          {% for product_batch in all_products | batch(products_per_slide) %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+              <div class="row gx-3 justify-content-center">
+                {% for item in product_batch %}
+                  <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <a href="{{ url_for('product', prod_id=item.id) }}">
+                      <div class="card h-100 border-0">
+                        <img src="{{ item.image_url or 'https://mdbootstrap.com/img/Photos/Square/img(4).jpg' }}"
+                             class="card-img-top" style="height: 180px; object-fit: cover;"
+                             alt="{{ item.name }}">
+                        <div class="card-body text-center py-1">
+                          <div class="fw-semibold">{{ item.name }}</div>
+                          <div class="text-purple">{{ item.price }} $</div>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+
+        </div>
+    </div>
+
+    <!-- Arrows -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+        <div class="carousel-arrow-circle">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+        <div class="carousel-arrow-circle">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    </button>
+  </div>
+
+  <!-- Display one product -->
+  <div class="container">
+        <div class="card border-0">
+            <div class="card-body">
+                <div class="row border-0">
+                    <div class="col-lg-5 col-md-5 col-sm-6">
+                        <div class="white-box text-center"><img src="https://www.bootdey.com/image/430x600/8c52ff/000000" class="img-responsive"></div>
+                    </div>
+                    <div class="col-lg-7 col-md-7 col-sm-6">
+                        <a href="{{ url_for('product', prod_id=product.id) }}">
+                            <h5 class="box-title product-title mt-5">{{ product.name }}</h5>
+                        </a>
+                        <hr>
+                        <p class="mt-0 mb-3">{{ product.price }} $</p><br>
+                        <div class="product-actions">
+
+                            <form action="{{ url_for('add_cart', prod_id=product.id) }}" method="POST">
+                                <div class="product-actions">
+                                    <div class="qty-wrapper">
+                                        <button type="button" class="qty-btn" onclick="decreaseQty(this)">−</button>
+                                        <input type="number" name="amount" id="qty" value="1" min="1" class="qty-input">
+                                        <button type="button" class="qty-btn" onclick="increaseQty(this)">+</button>
+                                    </div>
+                                    <button type="submit" class="add-to-cart-btn">
+                                        Add to Cart
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+
+                        <hr>
+                        <p class="box-title mt-5">{{ product.text }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+  </div>
+
+  <br><br>
+  <h3>Electronics</h3>
+  <hr>
+  <div id="productCarousel2" class="carousel slide mb-5" data-bs-ride="carousel" data-bs-interval="4000">
+    <div class="d-flex justify-content-center">
+        <div class="carousel-inner" style="width: 1200px;">
+          {% set products_per_slide = 5 %}
+          {% for product_batch in all_electr | batch(products_per_slide) %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+              <div class="row gx-3 justify-content-center">
+                {% for item in product_batch %}
+                  <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+                    <a href="{{ url_for('product', prod_id=item.id) }}">
+                      <div class="card h-100 border-0">
+                        <img src="{{ item.image_url or 'https://mdbootstrap.com/img/Photos/Square/img(4).jpg' }}"
+                             class="card-img-top" style="height: 180px; object-fit: cover;"
+                             alt="{{ item.name }}">
+                        <div class="card-body text-center py-1">
+                          <div class="fw-semibold">{{ item.name }}</div>
+                          <div class="text-purple">{{ item.price }} $</div>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+
+        </div>
+    </div>
+
+    <!-- Arrows -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel2" data-bs-slide="prev">
+        <div class="carousel-arrow-circle">
+            <i class="fas fa-chevron-left"></i>
+        </div>
+    </button>
+
+    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel2" data-bs-slide="next">
+        <div class="carousel-arrow-circle">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    </button>
+  </div>
+
+{% include "footer.html" %}

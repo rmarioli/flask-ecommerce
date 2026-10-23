@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>AnyBuy - Ecommerce</title>
+
+    {% block styles %}
+    <!-- Bootstrap via Flask-Bootstrap -->
+    {{ bootstrap.load_css() }}
+
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon.ico') }}" />
+
+    <!-- Font Awesome -->
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+    {% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="/">Any Buy</a>
+
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarResponsive"
+                    aria-controls="navbarResponsive"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                Menu
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto py-4 py-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link px-lg-3 py-3 py-lg-4 d-flex align-items-center" href="{{ url_for('home') }}">Home</a>
+                    </li>
+
+                    {% if not logged_in: %}
+                        <li class="nav-item">
+                            <a class="nav-link px-lg-3 py-3 py-lg-4 d-flex align-items-center" href="{{ url_for('login') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-lg-3 py-3 py-lg-4 d-flex align-items-center" href="{{ url_for('register') }}">Register</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link px-lg-3 py-3 py-lg-4 d-flex align-items-center" href="{{ url_for('logout') }}">Log Out</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="nav-item">
+                        <div class="cart-wrapper">
+                            <a class="nav-link px-lg-3 py-3 py-lg-4 d-flex align-items-center" href="#">
+                              <i class="fa-solid fa-cart-shopping fs-5"></i><span class="ms-2">({{ cart_count }})</span>
+                            </a>
+                            <div class="cart-dropdown">
+                                {% if cart_items %}
+                                    {% for cart_item in cart_items %}
+                                        <div class="cart-row">
+
+                                            <!-- TOP: name + price (left aligned) -->
+                                            <div class="cart-top">
+                                                <div class="cart-name">
+                                                    {{ cart_item.product.name }}
+                                                </div>
+
+                                                <div class="cart-price">
+                                                    {{ cart_item.product.price }} $
+                                                </div>
+                                            </div>
+
+                                            <!-- BOTTOM: qty controls (LEFT aligned under name) -->
+                                            <div class="cart-bottom">
+                                                <div class="qty-wrapper">
+
+                                                    <form action="{{ url_for('add_subs_qty', cart_id=cart_item.id, add_subs=1) }}" method="GET">
+                                                        <button type="submit" class="qty-btn">−</button>
+                                                    </form>
+
+                                                    <input type="number"
+                                                           name="amount"
+                                                           value="{{ cart_item.amount }}"
+                                                           min="1"
+                                                           class="qty-input">
+
+                                                    <form action="{{ url_for('add_subs_qty', cart_id=cart_item.id, add_subs=0) }}" method="GET">
+                                                        <button type="submit" class="qty-btn">+</button>
+                                                    </form>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    {% endfor %}
+                                    <hr class="cart-divider">
+
+                                    <div class="d-flex justify-content-between align-items-center subtotal-row">
+                                        <span>Subtotal</span>
+                                        <strong>{{ cart_total }} $</strong>
+                                    </div>
+
+                                    <form action="{{ url_for('pay') }}" method="POST">
+                                        <button class="btn btn-primary btn-sm w-100 mt-2">
+                                            Checkout
+                                        </button>
+                                    </form>
+
+                                {% else %}
+                                    <p>Your cart is empty</p>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content -->
+<div class="container px-4 px-lg-5">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-11">
+
+      <!-- Banner -->
+      <div class="container px-20">
+          <img src="{{ url_for('static', filename='assets/img/banner.png') }}"
+               class="w-50"
+               style="height: 150px;">
+      </div>
+
+      <!-- Category Nav -->
+      <div class="d-flex flex-wrap align-items-center mb-4 custom-nav">
+          <ul class="nav me-auto">
+              <li class="nav-item">
+                  <a href="{{ url_for('home') }}" class="nav-link active">Home</a>
+              </li>
+              <li class="nav-item">
+                  <a href="{{ url_for('grid_prod', cat='Beauty') }}" class="nav-link">Beauty</a>
+              </li>
+              <li class="nav-item">
+                  <a href="{{ url_for('grid_prod', cat='Books') }}" class="nav-link">Books</a>
+              </li>
+              <li class="nav-item">
+                  <a href="{{ url_for('grid_prod', cat='Clothing') }}" class="nav-link">Clothing</a>
+              </li>
+              <li class="nav-item">
+                  <a href="{{ url_for('grid_prod', cat='Electronics') }}" class="nav-link">Electronics</a>
+              </li>
+              <li class="nav-item">
+                  <a href="{{ url_for('grid_prod', cat='Furniture') }}" class="nav-link">Furniture</a>
+              </li>
+              <li class="nav-item">
+                  <a href="{{ url_for('grid_prod', cat='Sports') }}" class="nav-link">Sports</a>
+              </li>
+          </ul>
+
+          <form action="{{ url_for('search') }}" method="GET" class="col-12 col-lg-auto mb-2 mb-lg-0" role="search">
+              <input type="search" class="form-control" placeholder="Search..." name="search_bar">
+          </form>
+      </div>
